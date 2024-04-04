@@ -14,8 +14,17 @@ def get_method():
             fastest_descent_method()
 
 
-def calculate_h():
-    return -0.5
+def calculate_h(x_10, x_20, df_dx1, df_dx2):
+    h_symbol = Symbol("h")
+    x_11 = x_10 - h_symbol * df_dx1
+    x_21 = x_20 - h_symbol * df_dx2
+    f_x = func(x_11, x_21)
+    diff_div = sympy.diff(f_x, h_symbol)
+    diff_diff_div = sympy.diff(diff_div, h_symbol)
+    diff_diff_diff = sympy.diff(diff_diff_div, h_symbol)
+    h_parts = diff_diff_div.args
+    h = -float(h_parts[0]) / float(diff_diff_diff)
+    return h
 
 
 def func(x_1, x_2):
@@ -64,8 +73,8 @@ def fastest_descent_method():
     df_dx1, df_dx2 = diff_func(x_10, x_20)
     print(f'df/dx1 = {df_dx1}')
     print(f'df/dx2 = {df_dx2}')
+    h = calculate_h(x_10, x_20, df_dx1, df_dx2)
     while math.sqrt(df_dx1 ** 2 + df_dx2 ** 2) > e:
-        h = calculate_h()
         x_1new = x_10 - h * df_dx1
         x_2new = x_20 - h * df_dx2
         print(f'x_1 = {x_1new}')
